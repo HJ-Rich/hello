@@ -1,5 +1,7 @@
 package com.example.hello;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -8,8 +10,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class HelloController {
 
+    private static final LocalDateTime NOW = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
+
     @GetMapping
     public String hello() {
-        return "hello";
+        return String.format("hello! started on ", NOW);
     }
 }
