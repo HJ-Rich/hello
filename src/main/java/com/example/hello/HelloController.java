@@ -14,6 +14,6 @@ public class HelloController {
 
     @GetMapping
     public String hello() {
-        return String.format("hello! started on ", NOW);
+        return String.format("hello! started on %s", NOW);
     }
 }
