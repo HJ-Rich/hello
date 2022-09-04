@@ -14,6 +14,6 @@ public class HelloController {
 
     @GetMapping
     public String hello() {
-        return String.format("hello! started on %s", NOW);
+        return String.format("hello! started on %s%s", NOW, "main-branch");
     }
 }
