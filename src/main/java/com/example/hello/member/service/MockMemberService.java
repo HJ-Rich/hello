@@ -2,6 +2,7 @@ package com.example.hello.member.service;
 
 import com.example.hello.member.domain.Member;
 import com.example.hello.member.repository.MemberRepository;
+import java.util.List;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -11,6 +12,11 @@ public class MockMemberService implements MemberService {
 
     public MockMemberService(final MemberRepository memberRepository) {
         this.memberRepository = memberRepository;
+    }
+
+    @Override
+    public List<Member> findAll() {
+        return memberRepository.findAll();
     }
 
     @Override
