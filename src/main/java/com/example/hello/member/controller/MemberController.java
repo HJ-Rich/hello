@@ -1,4 +1,4 @@
-package com.example.hello.member;
+package com.example.hello.member.controller;
 
 import com.example.hello.member.domain.Member;
 import com.example.hello.member.dto.MemberResponse;
