@@ -2,6 +2,7 @@ plugins {
     id 'org.springframework.boot' version '2.7.3'
     id 'io.spring.dependency-management' version '1.0.13.RELEASE'
     id 'java'
+    id 'org.asciidoctor.jvm.convert' version '3.3.2'
 }
 
 group = 'com.example'
@@ -12,11 +13,65 @@ repositories {
     mavenCentral()
 }
 
+configurations {
+    asciidoctorExt
+}
+
 dependencies {
+    //rest-assured
+    testImplementation 'io.rest-assured:rest-assured:4.4.0'
+    testImplementation 'io.rest-assured:spring-mock-mvc:4.4.0'
+
+    //restdocs
+    asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor'
+    //Add a dependency on spring-restdocs-asciidoctor in the asciidoctorExt configuration.
+    //This will automatically configure the snippets attribute for use in your .adoc files to point to build/generated-snippets.
+    //It will also allow you to use the operation block macro.
+    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+    testImplementation 'org.springframework.restdocs:spring-restdocs-restassured'
+
     implementation 'org.springframework.boot:spring-boot-starter-web'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
+ext {
+    set('snippetsDir', file("build/generated-snippets"))
+}
+
 tasks.named('test') {
     useJUnitPlatform()
+}
+
+tasks.named('asciidoctor') {
+    configurations 'asciidoctorExt'
+    sources {
+        include("**/index.adoc", "**/common/*.adoc")
+    }
+    baseDirFollowsSourceFile()
+    inputs.dir snippetsDir
+
+    dependsOn test
+}
+
+asciidoctor.doFirst {
+    delete file('src/main/resources/static/docs')
+}
+
+task createDocument(type: Copy) {
+    dependsOn asciidoctor
+
+    from file("build/docs/asciidoc")
+    into file("src/main/resources/static")
+}
+
+task displaceDocument(type: Copy) {
+    dependsOn asciidoctor
+
+    from("${asciidoctor.outputDir}")
+    into("build/resources/main/static")
+}
+
+bootJar {
+    dependsOn createDocument
+    dependsOn displaceDocument
 }
